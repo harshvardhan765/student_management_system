@@ -1,0 +1,325 @@
+{% extends "dashboard/layout.html" %}
+
+{% block title %}
+Students
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <h2>👨‍🎓 Student Management</h2>
+
+        <a href="{% url 'add_student' %}" class="btn btn-success">
+            + Add Student
+        </a>
+
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="alert">
+                </button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- Search Card -->
+    <div class="card shadow-sm mb-4">
+
+        <div class="card-body">
+
+            <form method="GET">
+
+                <div class="row g-2">
+
+                    <div class="col-md-10">
+
+                        <input
+                            type="text"
+                            name="q"
+                            class="form-control"
+                            placeholder="🔍 Search by Name, Username, Email, Roll No, Phone or Course..."
+                            value="{{ search_query }}"
+                        >
+
+                    </div>
+
+                    <div class="col-md-2 d-grid">
+
+                        <button
+                            type="submit"
+                            class="btn btn-primary">
+
+                            Search
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    <div class="card shadow">
+
+        <div class="card-body">
+
+            <div class="table-responsive">
+
+                <table class="table table-hover align-middle">
+
+                    <thead class="table-dark">
+
+                        <tr>
+                            <th>Photo</th>
+                            <th>Name</th>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Roll No.</th>
+                            <th>Phone</th>
+                            <th>Course</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                    {% for student in students %}
+
+                        <tr>
+
+                            <td>
+
+                                {% if student.profile_picture %}
+
+                                    <img
+                                        src="{{ student.profile_picture.url }}"
+                                        width="55"
+                                        height="55"
+                                        class="rounded-circle"
+                                    >
+
+                                {% else %}
+
+                                    No Image
+
+                                {% endif %}
+
+                            </td>
+
+                            <td>
+                                {{ student.user.first_name }}
+                                {{ student.user.last_name }}
+                            </td>
+
+                            <td>
+                                {{ student.user.username }}
+                            </td>
+
+                            <td>
+                                {{ student.user.email }}
+                            </td>
+
+                            <td>
+                                {{ student.roll_number }}
+                            </td>
+
+                            <td>
+                                {{ student.phone }}
+                            </td>
+
+                            <td>
+                                {{ student.course }}
+                            </td>
+
+                            <td>
+
+                                {% if student.is_active %}
+
+                                    <span class="badge bg-success">
+                                        Active
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="badge bg-danger">
+                                        Inactive
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+                            <td>
+
+                                <a
+                                    href="{% url 'edit_student' student.id %}"
+                                    class="btn btn-warning btn-sm">
+
+                                    Edit
+
+                                </a>
+
+                                <a
+                                    href="{% url 'delete_student' student.id %}"
+                                    class="btn btn-danger btn-sm">
+
+                                    Delete
+
+                                </a>
+
+                            </td>
+
+                        </tr>
+
+                    {% empty %}
+
+                        <tr>
+
+                            <td colspan="9" class="text-center py-4">
+
+                                <h5 class="text-muted">
+                                    No students found.
+                                </h5>
+
+                            </td>
+
+                        </tr>
+
+                    {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            <!-- Pagination -->
+
+            {% if page_obj.has_other_pages %}
+
+            <div class="d-flex justify-content-between align-items-center mt-4 flex-wrap">
+
+                <div class="text-muted mb-2">
+
+                    Page <strong>{{ page_obj.number }}</strong>
+                    of
+                    <strong>{{ page_obj.paginator.num_pages }}</strong>
+
+                </div>
+
+                <nav>
+
+                    <ul class="pagination mb-0">
+
+                        {% if page_obj.has_previous %}
+
+                        <li class="page-item">
+
+                            <a class="page-link"
+                               href="?page=1{% if search_query %}&q={{ search_query }}{% endif %}">
+
+                                First
+
+                            </a>
+
+                        </li>
+
+                        <li class="page-item">
+
+                            <a class="page-link"
+                               href="?page={{ page_obj.previous_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}">
+
+                                Previous
+
+                            </a>
+
+                        </li>
+
+                        {% endif %}
+
+                        {% for num in page_obj.paginator.page_range %}
+
+                            {% if page_obj.number == num %}
+
+                                <li class="page-item active">
+
+                                    <span class="page-link">
+
+                                        {{ num }}
+
+                                    </span>
+
+                                </li>
+
+                            {% elif num >= page_obj.number|add:-2 and num <= page_obj.number|add:2 %}
+
+                                <li class="page-item">
+
+                                    <a class="page-link"
+                                       href="?page={{ num }}{% if search_query %}&q={{ search_query }}{% endif %}">
+
+                                        {{ num }}
+
+                                    </a>
+
+                                </li>
+
+                            {% endif %}
+
+                        {% endfor %}
+
+                        {% if page_obj.has_next %}
+
+                        <li class="page-item">
+
+                            <a class="page-link"
+                               href="?page={{ page_obj.next_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}">
+
+                                Next
+
+                            </a>
+
+                        </li>
+
+                        <li class="page-item">
+
+                            <a class="page-link"
+                               href="?page={{ page_obj.paginator.num_pages }}{% if search_query %}&q={{ search_query }}{% endif %}">
+
+                                Last
+
+                            </a>
+
+                        </li>
+
+                        {% endif %}
+
+                    </ul>
+
+                </nav>
+
+            </div>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

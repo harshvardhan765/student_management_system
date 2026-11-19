@@ -1,0 +1,209 @@
+{% extends "dashboard/layout.html" %}
+
+{% block title %}
+Dashboard
+{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+    <div>
+
+        <h2 class="fw-bold mb-1">Dashboard</h2>
+
+        <p class="text-muted mb-0">
+            Welcome back,
+            <strong>{{ request.user.first_name|default:request.user.username }}</strong> 👋
+        </p>
+
+    </div>
+
+    <span class="badge bg-primary fs-6 px-3 py-2">
+        Student Management System
+    </span>
+
+</div>
+
+<div class="row g-4">
+
+    <div class="col-lg-3 col-md-6">
+        <div class="card h-100">
+            <div class="card-body d-flex justify-content-between align-items-center">
+                <div>
+                    <small class="text-muted">Students</small>
+                    <h2>{{ student_count }}</h2>
+                </div>
+                <i class="bi bi-people-fill display-5 text-primary"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6">
+        <div class="card h-100">
+            <div class="card-body d-flex justify-content-between align-items-center">
+                <div>
+                    <small class="text-muted">Teachers</small>
+                    <h2>{{ teacher_count }}</h2>
+                </div>
+                <i class="bi bi-person-workspace display-5 text-success"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6">
+        <div class="card h-100">
+            <div class="card-body d-flex justify-content-between align-items-center">
+                <div>
+                    <small class="text-muted">Courses</small>
+                    <h2>{{ course_count }}</h2>
+                </div>
+                <i class="bi bi-journal-bookmark-fill display-5 text-warning"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6">
+        <div class="card h-100">
+            <div class="card-body d-flex justify-content-between align-items-center">
+                <div>
+                    <small class="text-muted">Attendance</small>
+                    <h2>{{ attendance_count }}</h2>
+                </div>
+                <i class="bi bi-calendar-check-fill display-5 text-danger"></i>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="row mt-4">
+
+    <div class="col-lg-8">
+
+        <div class="card">
+
+            <div class="card-header bg-white border-0">
+
+                <h5 class="fw-bold mb-0">
+                    📊 Students per Course
+                </h5>
+
+            </div>
+
+            <div class="card-body">
+
+                <div style="height:420px;">
+                    <canvas id="studentsChart"></canvas>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-lg-4">
+
+        <div class="card">
+
+            <div class="card-header bg-white border-0">
+
+                <h5 class="fw-bold">
+                    Quick Actions
+                </h5>
+
+            </div>
+
+            <div class="card-body d-grid gap-3">
+
+                <a href="{% url 'add_student' %}" class="btn btn-primary">
+                    <i class="bi bi-person-plus-fill"></i>
+                    Add Student
+                </a>
+
+                <a href="{% url 'add_teacher' %}" class="btn btn-success">
+                    <i class="bi bi-person-workspace"></i>
+                    Add Teacher
+                </a>
+
+                <a href="{% url 'add_course' %}" class="btn btn-warning">
+                    <i class="bi bi-book-fill"></i>
+                    Add Course
+                </a>
+
+                <a href="{% url 'add_attendance' %}" class="btn btn-danger">
+                    <i class="bi bi-calendar-plus-fill"></i>
+                    Mark Attendance
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+const labels = JSON.parse('{{ course_labels|escapejs }}');
+const data = JSON.parse('{{ course_counts|escapejs }}');
+
+new Chart(document.getElementById('studentsChart'), {
+
+    type: 'bar',
+
+    data: {
+        labels: labels,
+        datasets: [{
+            data: data,
+            backgroundColor: [
+                "#2563EB",
+                "#10B981",
+                "#F59E0B",
+                "#EF4444",
+                "#8B5CF6",
+                "#06B6D4",
+                "#EC4899",
+                "#84CC16"
+            ],
+            borderRadius: 12
+        }]
+    },
+
+    options: {
+
+        responsive: true,
+
+        maintainAspectRatio: false,
+
+        plugins: {
+            legend: {
+                display: false
+            }
+        },
+
+        scales: {
+            x: {
+                grid: {
+                    display: false
+                }
+            },
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    stepSize: 1
+                }
+            }
+        }
+
+    }
+
+});
+
+</script>
+
+{% endblock %}

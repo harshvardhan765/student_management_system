@@ -1,0 +1,88 @@
+{% extends "dashboard/layout.html" %}
+
+{% block title %}
+{% if form.instance.pk %}
+Edit Teacher
+{% else %}
+Add Teacher
+{% endif %}
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+
+    <div class="card shadow-lg border-0">
+
+        <div class="card-header bg-success text-white">
+
+            <h3 class="mb-0">
+
+                {% if form.instance.pk %}
+                    ✏ Edit Teacher
+                {% else %}
+                    👨‍🏫 Add New Teacher
+                {% endif %}
+
+            </h3>
+
+        </div>
+
+        <div class="card-body">
+
+            <form method="POST" enctype="multipart/form-data">
+
+                {% csrf_token %}
+
+                {% for field in form %}
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            {{ field.label }}
+                        </label>
+
+                        {{ field }}
+
+                        {% if field.help_text %}
+                            <small class="text-muted d-block">
+                                {{ field.help_text }}
+                            </small>
+                        {% endif %}
+
+                        {% if field.errors %}
+                            <div class="text-danger">
+                                {{ field.errors }}
+                            </div>
+                        {% endif %}
+
+                    </div>
+
+                {% endfor %}
+
+                <button type="submit" class="btn btn-success">
+
+                    {% if form.instance.pk %}
+                        💾 Update Teacher
+                    {% else %}
+                        💾 Save Teacher
+                    {% endif %}
+
+                </button>
+
+                <a href="{% url 'teacher_list' %}"
+                   class="btn btn-secondary">
+
+                    Cancel
+
+                </a>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

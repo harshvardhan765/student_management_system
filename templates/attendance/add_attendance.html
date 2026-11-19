@@ -1,0 +1,58 @@
+{% extends "dashboard/layout.html" %}
+
+{% block title %}
+Attendance Form
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="card shadow">
+
+        <div class="card-header bg-primary text-white">
+
+            <h3 class="mb-0">
+                {% if form.instance.pk %}
+                    Edit Attendance
+                {% else %}
+                    Mark Attendance
+                {% endif %}
+            </h3>
+
+        </div>
+
+        <div class="card-body">
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+                {{ form.as_p }}
+
+                <div class="mt-3">
+
+                    <button type="submit" class="btn btn-success">
+
+                        Save
+
+                    </button>
+
+                    <a href="{% url 'attendance_list' %}"
+                       class="btn btn-secondary">
+
+                        Cancel
+
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,131 @@
+{% extends "dashboard/layout.html" %}
+
+{% block title %}
+Teachers
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <h2>👨‍🏫 Teacher Management</h2>
+
+        <a href="{% url 'add_teacher' %}" class="btn btn-success">
+            + Add Teacher
+        </a>
+
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-success">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="card shadow">
+
+        <div class="card-body">
+
+            <table class="table table-hover align-middle">
+
+                <thead class="table-dark">
+
+                    <tr>
+                        <th>Photo</th>
+                        <th>Name</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Employee ID</th>
+                        <th>Phone</th>
+                        <th>Qualification</th>
+                        <th>Experience</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                {% for teacher in teachers %}
+
+                    <tr>
+
+                        <td>
+                            {% if teacher.profile_picture %}
+                                <img src="{{ teacher.profile_picture.url }}"
+                                     width="55"
+                                     height="55"
+                                     class="rounded-circle">
+                            {% else %}
+                                No Image
+                            {% endif %}
+                        </td>
+
+                        <td>{{ teacher.user.first_name }} {{ teacher.user.last_name }}</td>
+
+                        <td>{{ teacher.user.username }}</td>
+
+                        <td>{{ teacher.user.email }}</td>
+
+                        <td>{{ teacher.employee_id }}</td>
+
+                        <td>{{ teacher.phone }}</td>
+
+                        <td>{{ teacher.qualification }}</td>
+
+                        <td>{{ teacher.experience }} Years</td>
+
+                        <td>
+                            {% if teacher.is_active %}
+                                <span class="badge bg-success">Active</span>
+                            {% else %}
+                                <span class="badge bg-danger">Inactive</span>
+                            {% endif %}
+                        </td>
+
+                        <td>
+
+                            <a href="{% url 'edit_teacher' teacher.id %}"
+                               class="btn btn-warning btn-sm">
+
+                                Edit
+
+                            </a>
+
+                            <a href="{% url 'delete_teacher' teacher.id %}"
+                               class="btn btn-danger btn-sm">
+
+                                Delete
+
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                {% empty %}
+
+                    <tr>
+                        <td colspan="10" class="text-center">
+                            No Teachers Found.
+                        </td>
+                    </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
